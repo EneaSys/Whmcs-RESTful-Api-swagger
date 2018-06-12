@@ -1,0 +1,331 @@
+swagger: '2.0'
+info:
+  title: WHMCS API
+  version: 1.0.0
+schemes:
+  - https
+host: www.sm-host.com
+basePath: /modules/addons/rest_ful
+paths:
+  /AddOrder:
+    post:
+      summary: Add order
+      description: Adds an order to a client.
+      operationId: AddOrder
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: apiParameters
+          required: true
+          schema:
+            $ref: '#/definitions/RequestAddOrder'
+      responses:
+        '200':
+          description: ok
+          schema:
+            $ref: '#/definitions/WhmcsResponseSuccessAddOrder'
+        '490':
+          description: ko
+          schema:
+            $ref: '#/definitions/WhmcsResponseGeneric'
+  /UpdateClientProduct:
+    post:
+      summary: Update client Product
+      description: Updates a Client Service
+      operationId: UpdateClientProduct
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: apiParameters
+          required: true
+          schema:
+            $ref: '#/definitions/RequestUpdateClientProduct'
+      responses:
+        '200':
+          description: ok
+          schema:
+            $ref: '#/definitions/WhmcsResponseSuccessUpdateClientProduct'
+        '490':
+          description: ko
+          schema:
+            $ref: '#/definitions/WhmcsResponseGeneric'
+definitions:
+  RequestAddOrder:
+    type: object
+    required:
+      - clientid
+      - paymentmethod
+    properties:
+      clientid:
+        type: integer
+        format: int64
+      paymentmethod:
+        type: string
+        description: >-
+          The payment method for the order in the system format. eg.,mailin
+      pid:
+        type: array
+        items:
+          type: integer
+        description: The array of product ids to add the order for
+      domain:
+        type: array
+        items:
+          type: string
+        description: The array of domain names associated with the products/domains
+      billingcycle:
+        type: array
+        items:
+          type: string
+        description: The array of billing cycles for the products
+      domaintype:
+        type: array
+        items:
+          type: string
+        description: 'For domain registrations, an array of register or transfer values'
+      regperiod:
+        type: array
+        items:
+          type: integer
+        description: >-
+          For domain registrations, the registration periods for the domains
+          in the order
+      eppcode:
+        type: array
+        items:
+          type: string
+        description: >-
+          For domain transfers. The epp codes for the domains being
+          transferred in the order
+      nameserver1:
+        type: string
+        description: The first nameserver to apply to all domains in the order
+      nameserver2:
+        type: string
+        description: The second nameserver to apply to all domains in the order
+      nameserver3:
+        type: string
+        description: The third nameserver to apply to all domains in the order
+      nameserver4:
+        type: string
+        description: The fourth nameserver to apply to all domains in the order
+      nameserver5:
+        type: string
+        description: The fifth nameserver to apply to all domains in the order
+      customfields:
+        type: array
+        items:
+          type: string
+        description: The array of domain names associated with the products/domains
+      configoptions:
+        type: array
+        items:
+          type: string
+        description: The array of domain names associated with the products/domains
+      priceoverride:
+        type: array
+        items:
+          type: string
+        description: The array of domain names associated with the products/domains
+      promocode:
+        type: string
+        description: The promotion code to apply to the order
+      promooverride:
+        type: boolean
+        description: >-
+          Should the promotion apply to the order even without matching
+          promotional products
+      affid:
+        type: integer
+        description: The affiliate id to associate with the order
+      noinvoice:
+        type: boolean
+        description: Set to true to suppress the invoice generating for the whole order
+      noinvoiceemail:
+        type: boolean
+        description: >-
+          Set to try to suppress the Invoice Created email being sent for
+          the order
+      noemail:
+        type: boolean
+        description: Set to true to suppress the Order Confirmation email being sent
+      addons:
+        type: array
+        items:
+          type: string
+        description: >-
+          A comma separated list of addons to create on order with the
+          products
+      hostname:
+        type: array
+        items:
+          type: string
+        description: The hostname of the server for VPS/Dedicated Server orders
+      ns1prefix:
+        type: array
+        items:
+          type: string
+        description: >-
+          The first nameserver prefix for the VPS/Dedicated server. Eg. ns1
+          in ns1.hostname.com
+      ns2prefix:
+        type: array
+        items:
+          type: string
+        description: >-
+          The second nameserver prefix for the VPS/Dedicated server. Eg. ns2
+          in ns2.hostname.com
+      rootpw:
+        type: array
+        items:
+          type: string
+        description: >-
+          The second nameserver prefix for the VPS/Dedicated server. Eg. ns2
+          in ns2.hostname.com
+  RequestUpdateClientProduct:
+    type: object
+    required:
+      - serviceid
+    properties:
+      serviceid:
+        type: integer
+        description: The id of the client service to update
+      pid:
+        type: integer
+        description: The package id to associate with the service
+      serverid:
+        type: integer
+        description: The server id to associate with the service
+      nextduedate:
+        type: string
+        description: The next due date of the service (Y-m-d)
+      terminationDate:
+        type: string
+        description: Update the termination date of the service (Y-m-d)
+      completedDate:
+        type: string
+        description: Update the completed date of the service (Y-m-d)   
+      domain:
+        type: string
+        description: The domain name to be changed to
+      firstpaymentamount:
+        type: number
+        format: float
+        description: The first payment amount on the service
+      recurringamount:
+        type: number
+        format: float
+        description: The recurring amount for automatic renewal invoices
+      paymentmethod:
+        type: string
+        description: The payment method to associate in system format (eg paypal)
+      subscriptionid:
+        type: string
+        description: The subscription ID to associate with the service
+      status:
+        type: string
+        description: The status to change the service to
+      notes:
+        type: string
+        description: The admin notes for the service
+      serviceusername:
+        type: string
+        description: The service username
+      servicepassword:
+        type: string
+        description: The service password
+      overideautosuspend:
+        type: string
+        description: Should override auto suspend be provided (‘on’ or ‘off’)
+      overidesuspenduntil:
+        type: string
+        description: Update the Override Suspend date of the service (Y-m-d)
+      ns1:
+        type: string
+        description: Name server 1 (VPS/Dedicated servers only)
+      ns2:
+        type: string
+        description: Name server 2 (VPS/Dedicated servers only)
+      dedicatedip:
+        type: string
+        description: Dedicated ip of service
+      assignedips:
+        type: string
+        description: IPs Assigned (VPS/Dedicated servers only)
+      diskusage:
+        type: integer
+        description: The disk usage in bytes
+      disklimit:
+        type: integer
+        description: The disk limit in bytes
+      bwusage:
+        type: integer
+        description: The bandwidth usage in bytes
+      bwlimit:
+        type: integer
+        description: The bandwidth limit in bytes
+      suspendreason:
+        type: string
+        description: suspendreason
+      promoid:
+        type: integer
+        description: The promotion Id to associate
+      unset:
+        type: array
+        items:
+          type: string
+        description: "An array of items to unset. Can be one of: ‘domain’, ‘serviceusername’, ‘servicepassword’, ‘subscriptionid’, ‘ns1’, ‘ns2’, ‘dedicatedip’, ‘assignedips’, ‘notes’, ‘suspendreason’"
+      autorecalc:
+        type: boolean
+        description: "Should the recurring amount of the service be automatically recalculated (this will ignore any passed $recurringamount)"
+      customfields:
+        type: string
+        description: "Base64 encoded serialized array of custom field values - base64_encode(serialize(array(“1”=>“Yahoo”)));"
+      configoptions:
+        type: string
+        description: "Base64 encoded serialized array of configurable option field values - base64_encode(serialize(array(configoptionid => dropdownoptionid, XXX => array(‘optionid’ => YYY, ‘qty’ => ZZZ)))) - XXX is the ID of the configurable option - YYY is the optionid found in tblhostingconfigoption.optionid - ZZZ is the quantity you want to use for that option"
+  WhmcsResponseSuccessAddOrder:
+    type: object
+    properties:
+      result:
+        type: string
+        description: 'The result of the operation: success or error'
+      orderid:
+        type: integer
+        description: The Order ID for the created order
+      invoiceid:
+        type: integer
+        description: The Invoice ID created for the order
+      productids:
+        type: string
+        description: The Product/Service ID(s) created by the order
+      addonids:
+        type: string
+        description: The Addon ID(s) created by the order
+      domainids:
+        type: string
+        description: The Domain ID(s) created by the order
+  WhmcsResponseSuccessUpdateClientProduct:
+    type: object
+    properties:
+      result:
+        type: string
+        description: 'The result of the operation: success or error'
+      serviceid:
+        type: integer
+        description: The Id of the updated service
+  WhmcsResponseGeneric:
+    type: object
+    properties:
+      result:
+        type: string
+        description: 'The result of the operation: success or error'
+      message:
+        type: string
+        description: The message of error
