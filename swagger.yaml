@@ -30,7 +30,7 @@ paths:
         '490':
           description: ko
           schema:
-            $ref: '#/definitions/WhmcsResponseGeneric'
+            $ref: '#/definitions/WhmcsResponseErrorGeneric'
   /UpdateClientProduct:
     post:
       summary: Update client Product
@@ -54,7 +54,31 @@ paths:
         '490':
           description: ko
           schema:
-            $ref: '#/definitions/WhmcsResponseGeneric'
+            $ref: '#/definitions/WhmcsResponseErrorGeneric'
+  /AcceptOrder:
+    post:
+      summary: Accepts a pending order
+      description: Accepts a pending order
+      operationId: AcceptOrder
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: apiParameters
+          required: true
+          schema:
+            $ref: '#/definitions/RequestAcceptOrder'
+      responses:
+        '200':
+          description: ok
+          schema:
+            $ref: '#/definitions/WhmcsResponseSuccessAcceptOrder'
+        '490':
+          description: ko
+          schema:
+            $ref: '#/definitions/WhmcsResponseErrorGeneric'
 definitions:
   RequestAddOrder:
     type: object
@@ -242,7 +266,7 @@ definitions:
         description: The service password
       overideautosuspend:
         type: string
-        description: Should override auto suspend be provided (â€˜onâ€™ or â€˜offâ€™)
+        description: Should override auto suspend be provided (‘on’ or ‘off’)
       overidesuspenduntil:
         type: string
         description: Update the Override Suspend date of the service (Y-m-d)
@@ -280,16 +304,45 @@ definitions:
         type: array
         items:
           type: string
-        description: "An array of items to unset. Can be one of: â€˜domainâ€™, â€˜serviceusernameâ€™, â€˜servicepasswordâ€™, â€˜subscriptionidâ€™, â€˜ns1â€™, â€˜ns2â€™, â€˜dedicatedipâ€™, â€˜assignedipsâ€™, â€˜notesâ€™, â€˜suspendreasonâ€™"
+        description: "An array of items to unset. Can be one of: ‘domain’, ‘serviceusername’, ‘servicepassword’, ‘subscriptionid’, ‘ns1’, ‘ns2’, ‘dedicatedip’, ‘assignedips’, ‘notes’, ‘suspendreason’"
       autorecalc:
         type: boolean
         description: "Should the recurring amount of the service be automatically recalculated (this will ignore any passed $recurringamount)"
       customfields:
         type: string
-        description: "Base64 encoded serialized array of custom field values - base64_encode(serialize(array(â€œ1â€=>â€œYahooâ€)));"
+        description: "Base64 encoded serialized array of custom field values - base64_encode(serialize(array(“1”=>“Yahoo”)));"
       configoptions:
         type: string
-        description: "Base64 encoded serialized array of configurable option field values - base64_encode(serialize(array(configoptionid => dropdownoptionid, XXX => array(â€˜optionidâ€™ => YYY, â€˜qtyâ€™ => ZZZ)))) - XXX is the ID of the configurable option - YYY is the optionid found in tblhostingconfigoption.optionid - ZZZ is the quantity you want to use for that option"
+        description: "Base64 encoded serialized array of configurable option field values - base64_encode(serialize(array(configoptionid => dropdownoptionid, XXX => array(‘optionid’ => YYY, ‘qty’ => ZZZ)))) - XXX is the ID of the configurable option - YYY is the optionid found in tblhostingconfigoption.optionid - ZZZ is the quantity you want to use for that option"
+  RequestAcceptOrder:
+    type: object
+    required:
+      - orderid
+    properties:
+      orderid:
+        type: integer
+        description: The order id to be accepted
+      serverid:
+        type: integer
+        description: The specific server to assign to products within the order
+      serviceusername:
+        type: string
+        description: The specific username to assign to products within the order
+      servicepassword:
+        type: string
+        description: The specific password to assign to products within the order
+      registrar:
+        type: string
+        description: The specific registrar to assign to domains within the order
+      sendregistrar:
+        type: boolean
+        description: Send the request to the registrar to register the domain.
+      autosetup:
+        type: boolean
+        description: Send the request to the product module to activate the service. This can override the product configuration.
+      sendemail:
+        type: boolean
+        description: Send any automatic emails. This can be Product Welcome, Domain Renewal, Domain Transfer etc.
   WhmcsResponseSuccessAddOrder:
     type: object
     properties:
@@ -320,7 +373,13 @@ definitions:
       serviceid:
         type: integer
         description: The Id of the updated service
-  WhmcsResponseGeneric:
+  WhmcsResponseSuccessAcceptOrder:
+    type: object
+    properties:
+      result:
+        type: string
+        description: 'The result of the operation: success or error'
+  WhmcsResponseErrorGeneric:
     type: object
     properties:
       result:
